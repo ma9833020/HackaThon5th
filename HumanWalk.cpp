@@ -87,21 +87,27 @@ class Human{
 	int StartY;
 	int stackIndex;
 	int FindFlag;
+	int MinStep;
 	bool visit[10][10];
 	enum direction{foward = -1,right = 1,back = 1,left = -1};
     struct stack Trace[100];
-	void Set(int x,int y);
+	void Set(int x,int y,int MinStep);
 	void Walk(Room &room,int POS_X,int POS_Y);
 	memory remember[OBJECT_NUMBER];
 	
 	
 };
 
-void Human::Set(int x,int y){
+void Human::Set(int x,int y,int MinStep){
 	StartX = x;
 	StartY = y;
 	stackIndex = 0;
+	for(int i = 0; i < 100; i++){
+		Trace[i].x = 0;
+		Trace[i].y = 0;
+	}
 	FindFlag = 0;
+	this->MinStep = MinStep;
 }
 
 void Human::Walk(Room &room,int POS_X,int POS_Y){
@@ -111,26 +117,23 @@ void Human::Walk(Room &room,int POS_X,int POS_Y){
 	
 	
 	//cout<<stackIndex<<" X: "<<POS_X<<" Y: "<<POS_Y<<endl;
-	for(int i = 0; i < stackIndex; i++)
+	/*for(int i = 0; i < stackIndex; i++)
     {
       cout<<i<<" : ";
-      cout<<" X: "<<Trace[i].x<<endl;
-      cout<<" Y: "<<Trace[i].y<<endl;
+      cout<<" X: "<<Human::Trace[i].x<<endl;
+      cout<<" Y: "<<Human::Trace[i].y<<endl;
      
     }
 	
 	cout<<endl;
       cout<<endl;
       cout<<endl;
-	getchar();
-	
-	if(FindFlag == 1)return;
+	getchar();*/
 	
 	
 	
-	
-	Trace[stackIndex].x = POS_X;
-	Trace[stackIndex++].y = POS_Y;
+	Human::Trace[stackIndex].x = POS_X;
+	Human::Trace[stackIndex++].y = POS_Y;
 	
 	if(POS_X+foward >= 0 && FindFlag!=1 && visit[POS_X+foward][POS_Y] ==false)//up
 	{
@@ -145,10 +148,14 @@ void Human::Walk(Room &room,int POS_X,int POS_Y){
 		
 		room.map[Next_X][Next_Y] = 2;
 		Human::Walk(room,Next_X,Next_Y);
+	    if(FindFlag == 1)return;
+	
+	   
+	   
 	   visit[Next_X][Next_Y] = false;	
-	   Trace[--stackIndex].x = 0;	
-	   Trace[stackIndex].y = 0;	
-		return;
+	   Human::Trace[--stackIndex].x = 0;	
+	   Human::Trace[stackIndex].y = 0;	
+//		return;
 	}
 
 	
@@ -166,10 +173,15 @@ void Human::Walk(Room &room,int POS_X,int POS_Y){
 		
 		room.map[Next_X][Next_Y] = 2;
 		Human::Walk(room,Next_X,Next_Y);
+	   
+	    if(FindFlag == 1)return;
+	
+	
+	   
 	   visit[Next_X][Next_Y] = false;		
-	   Trace[--stackIndex].x = 0;	
-	   Trace[stackIndex].y = 0;	
-		return;
+	   Human::Trace[--stackIndex].x = 0;	
+	   Human::Trace[stackIndex].y = 0;	
+//		return;
 	}
 	
 	
@@ -188,11 +200,15 @@ void Human::Walk(Room &room,int POS_X,int POS_Y){
 		
 		room.map[Next_X][Next_Y] = 2;
 		Human::Walk(room,Next_X,Next_Y);	
-	   visit[Next_X][Next_Y] = false;
-	   Trace[--stackIndex].x = 0;	
-	   Trace[stackIndex].y = 0;	
 	   
-		return;
+	     if(FindFlag == 1)return;
+	
+	   
+	   visit[Next_X][Next_Y] = false;
+	   Human::Trace[--stackIndex].x = 0;	
+	   Human::Trace[stackIndex].y = 0;	
+	   
+//		return;
 	}
 
 
@@ -208,13 +224,17 @@ void Human::Walk(Room &room,int POS_X,int POS_Y){
 	  		 return;
         }
 		
-		room.map[Next_X][Next_Y] = 2;
-		Human::Walk(room,Next_X,Next_Y);	
-	   visit[Next_X][Next_Y] = false;
-	   Trace[--stackIndex].x = 0;	
-	   Trace[stackIndex].y = 0;	
+	   room.map[Next_X][Next_Y] = 2;
+	   Human::Walk(room,Next_X,Next_Y);	
+	   if(FindFlag == 1)return;
+	
 	   
-		return;
+	   
+	   visit[Next_X][Next_Y] = false;
+	   Human::Trace[--stackIndex].x = 0;	
+	   Human::Trace[stackIndex].y = 0;	
+	   
+//		return;
 	}
 
 	
@@ -224,6 +244,7 @@ void Human::Walk(Room &room,int POS_X,int POS_Y){
 	   return;
 		
 	}
+	
 	
 	
 }
@@ -241,22 +262,15 @@ int main()
   Tom.Set(4,4);
   Tom.Walk(bedroom,Tom.StartX,Tom.StartY);
   
+   for(int i = 0; i < Tom.stackIndex; i++)
+  			{	
+  	 	  	  cout<<i<<" : ";
+     	  	  cout<<" X: "<<Tom.Trace[i].x<<endl;
+     	  	  cout<<" Y: "<<Tom.Trace[i].y<<endl;
+     	  	  cout<<endl;
+  			}
+  			cout<<"Total step :"<<Tom.stackIndex<<endl;
+ 
   
-  for(int i = 0; i < 100; i++)
-  {
-  	 cout<<i<<" : ";
-     cout<<" X: "<<Tom.Trace[i].x<<endl;
-     cout<<" Y: "<<Tom.Trace[i].y<<endl;
-     cout<<endl;
-  }
-  
-  /*for(int i = 0; i < 10; i++){
-    for(int j = 0; j < 10; j++)
-    {
-    	cout<<bedroom.map[i][j]<<" ";
-    }
-   cout<<endl;
-  }*/
-	
 	return 0;
 }
